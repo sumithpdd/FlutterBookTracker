@@ -1,5 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, invalid_return_type_for_catch_error
 
+import 'package:book_tracker/screens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'input_decoration.dart';
@@ -56,26 +58,28 @@ class LoginForm extends StatelessWidget {
                 textStyle: TextStyle(fontSize: 18)),
             onPressed: () {
               if (formKey.currentState!.validate()) {
-                // FirebaseAuth.instance
-                //     .signInWithEmailAndPassword(
-                //         email: _emailTextController.text,
-                //         password: _passwordTextController.text)
-                //     .then((value) {
-                //   Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => MainScreenPage()));
-                // }).catchError((onError) {
-                //   return showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return AlertDialog(
-                //         title: Text('Oops!'),
-                //         content: Text('${onError.message}'),
-                //       );
-                //     },
-                //   );
-                // });
+                FirebaseAuth.instance
+                    .signInWithEmailAndPassword(
+                        email: emailTextController.text,
+                        password: passwordTextController.text)
+                    .then((value) {
+                  // ignore: avoid_print
+                  print(value.user!.uid);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainScreenPage()));
+                }).catchError((onError) {
+                  return showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('Oops!'),
+                        content: Text('${onError.message}'),
+                      );
+                    },
+                  );
+                });
               }
             })
       ]),

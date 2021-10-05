@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:book_tracker/screens/main_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'input_decoration.dart';
@@ -58,37 +60,38 @@ class CreateAccountForm extends StatelessWidget {
               if (formKey.currentState!.validate()) {
                 String email = emailTextController.text;
                 //john@me.com ['john', 'me.com']
-                // FirebaseAuth.instance
-                //     .createUserWithEmailAndPassword(
-                //         email: email, password: _passwordTextController.text)
-                //     .then((value) {
-                //   if (value.user != null) {
-                //     String displayName = email.toString().split('@')[0];
-                //     createUser(displayName, context).then((value) {
-                //       FirebaseAuth.instance
-                //           .signInWithEmailAndPassword(
-                //               email: email,
-                //               password: _passwordTextController.text)
-                //           .then((value) {
-                //         return Navigator.push(
-                //             context,
-                //             MaterialPageRoute(
-                //               builder: (context) => MainScreenPage(),
-                //             ));
-                //       }).catchError((onError) {
-                //         return showDialog(
-                //           context: context,
-                //           builder: (context) {
-                //             return AlertDialog(
-                //               title: Text('Oops!'),
-                //               content: Text('${onError.message}'),
-                //             );
-                //           },
-                //         );
-                //       });
-                //     });
-                //   }
-                // });
+                FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: email, password: passwordTextController.text)
+                    .then((value) {
+                  // ignore: avoid_print
+                  print(value.user);
+                  if (value.user != null) {
+                    String displayName = email.toString().split('@')[0];
+                    // createUser(displayName, context).then((value) {
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: email, password: passwordTextController.text)
+                        .then((value) {
+                      return Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainScreenPage(),
+                          ));
+                    }).catchError((onError) {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text('Oops!'),
+                            content: Text('${onError.message}'),
+                          );
+                        },
+                      );
+                    });
+                    // },                    );
+                  }
+                });
               }
             },
             child: Text('Create Account'))
