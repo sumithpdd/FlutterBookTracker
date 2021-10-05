@@ -3,6 +3,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+import 'login_page.dart';
+
 class GetStartedPage extends StatelessWidget {
   const GetStartedPage({Key? key}) : super(key: key);
 
@@ -34,11 +36,11 @@ class GetStartedPage extends StatelessWidget {
                   backgroundColor: Color(0xff69639f),
                   textStyle: TextStyle(fontSize: 18)),
               onPressed: () {
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //       builder: (context) => LoginPage(),
-                //     ));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ));
               },
               icon: Icon(Icons.login_rounded),
               label: Padding(
