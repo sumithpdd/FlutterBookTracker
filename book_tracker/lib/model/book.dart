@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Book {
   final String id;
   final String title;
-  final String? author;
+  //final String? author;
   final String? notes;
   final String? photoUrl;
   final String? categories;
@@ -19,7 +19,7 @@ class Book {
   Book({
     required this.id,
     required this.title,
-    this.author,
+    //this.author,
     this.notes,
     this.photoUrl,
     this.categories,
@@ -35,7 +35,7 @@ class Book {
     return Book(
         id: data["id"],
         title: data["title"],
-        author: data['author'],
+        //  author: data['author'],
         notes: data['notes'],
         photoUrl: data['photo_url'],
         categories: data['categories'],
@@ -47,27 +47,27 @@ class Book {
         finishedReading: data['finished_reading_at'],
         userId: data['user_id']);
   }
-  factory Book.fromDocument(QueryDocumentSnapshot data) {
+  factory Book.fromDocument(QueryDocumentSnapshot doc) {
     return Book(
-        id: data.id,
-        title: data.get('title'),
-        author: data.get('author'),
-        notes: data.get('notes'),
-        photoUrl: data.get('photo_url'),
-        categories: data.get('categories'),
-        publishedDate: data.get('published_date'),
-        rating: parseDouble(data.get('rating')),
-        description: data.get('description'),
-        pageCount: data.get('page_count'),
-        startedReading: data.get('started_reading_at'),
-        finishedReading: data.get('finished_reading_at'),
-        userId: data.get('user_id'));
+        id: doc.id,
+        title: (doc.data() as dynamic)['title'],
+        // author: (doc.data() as dynamic)['author'],
+        notes: (doc.data() as dynamic)['notes'],
+        photoUrl: (doc.data() as dynamic)['photo_url'],
+        categories: (doc.data() as dynamic)['categories'],
+        publishedDate: (doc.data() as dynamic)['published_date'],
+        rating: parseDouble((doc.data() as dynamic)['rating']),
+        description: (doc.data() as dynamic)['description'],
+        pageCount: (doc.data() as dynamic)['page_count'],
+        startedReading: (doc.data() as dynamic)['started_reading_at'],
+        finishedReading: (doc.data() as dynamic)['finished_reading_at'],
+        userId: (doc.data() as dynamic)['user_id']);
   }
   Map<String, dynamic> toMap() {
     return {
       'title': title,
       'user_id': userId,
-      'author': author,
+      //  'author': author,
       'notes': notes,
       'photo_url': photoUrl,
       'published_date': publishedDate,
