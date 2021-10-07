@@ -1,16 +1,25 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/widgets/create_profile_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'login_page.dart';
 
 class MainScreenPage extends StatelessWidget {
   const MainScreenPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference userCollectionReference =
+        FirebaseFirestore.instance.collection('users');
     CollectionReference bookCollectionReference =
         FirebaseFirestore.instance.collection('books');
+
+    var authUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -31,6 +40,76 @@ class MainScreenPage extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: userCollectionReference.snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    final userListStream = snapshot.data!.docs.map((user) {
+                      return MUser.fromDocument(user);
+                    }).where((user) {
+                      return (user.uid == authUser.uid);
+                    }).toList(); //[user]
+
+                    MUser curUser = userListStream[0];
+
+                    return Column(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: InkWell(
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundImage: NetworkImage(curUser.avatarUrl ??
+                                  'https://i.pravatar.cc/300'),
+                              backgroundColor: Colors.white,
+                              child: Text(''),
+                            ),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  // return createProfileMobile(context, userListStream,
+                                  //     FirebaseAuth.instance.currentUser, null);
+                                  return createProfileDialog(
+                                      context, curUser, <Book>[]);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Text(
+                          curUser.displayName!.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.black),
+                        )
+                      ],
+                    );
+                  },
+                )
+              : Container(),
+          TextButton.icon(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut().then((value) {
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ));
+                }, onError: (error) {
+                  print(error.toString());
+                });
+              },
+              icon: Icon(Icons.logout),
+              label: Text(''))
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: bookCollectionReference.snapshots(),
