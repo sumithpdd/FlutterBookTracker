@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'book_search_page.dart';
 import 'login_page.dart';
 
 class MainScreenPage extends StatelessWidget {
@@ -110,6 +111,17 @@ class MainScreenPage extends StatelessWidget {
               icon: Icon(Icons.logout),
               label: Text(''))
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BookSearchPage(),
+              ));
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.redAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: bookCollectionReference.snapshots(),

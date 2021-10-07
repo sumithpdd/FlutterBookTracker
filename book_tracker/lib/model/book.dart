@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book {
   final String id;
+  final String? isbn13;
   final String title;
-  //final String? author;
+  final String? bookauthor;
+  //final String? bookauthor;
   final String? notes;
   final String? photoUrl;
   final String? categories;
@@ -19,7 +21,8 @@ class Book {
   Book({
     required this.id,
     required this.title,
-    //this.author,
+    required this.isbn13,
+    this.bookauthor,
     this.notes,
     this.photoUrl,
     this.categories,
@@ -35,7 +38,8 @@ class Book {
     return Book(
         id: data["id"],
         title: data["title"],
-        //  author: data['author'],
+        isbn13: data["isbn13"],
+        bookauthor: data['bookauthor'],
         notes: data['notes'],
         photoUrl: data['photo_url'],
         categories: data['categories'],
@@ -51,7 +55,8 @@ class Book {
     return Book(
         id: doc.id,
         title: (doc.data() as dynamic)['title'],
-        // author: (doc.data() as dynamic)['author'],
+        isbn13: (doc.data() as dynamic)["isbn13"],
+        bookauthor: (doc.data() as dynamic)['bookauthor'],
         notes: (doc.data() as dynamic)['notes'],
         photoUrl: (doc.data() as dynamic)['photo_url'],
         categories: (doc.data() as dynamic)['categories'],
@@ -67,7 +72,8 @@ class Book {
     return {
       'title': title,
       'user_id': userId,
-      //  'author': author,
+      'isbn13': isbn13,
+      'bookauthor': bookauthor,
       'notes': notes,
       'photo_url': photoUrl,
       'published_date': publishedDate,
