@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/widgets/book_details_dialog.dart';
 import 'package:book_tracker/widgets/create_profile_dialog.dart';
+import 'package:book_tracker/widgets/reading_list_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +24,7 @@ class MainScreenPage extends StatelessWidget {
         FirebaseFirestore.instance.collection('books');
 
     var authUser = FirebaseAuth.instance.currentUser;
+    List<Book> userBooksReadList = [];
 
     return Scaffold(
       appBar: AppBar(
@@ -105,6 +109,7 @@ class MainScreenPage extends StatelessWidget {
                         builder: (context) => LoginPage(),
                       ));
                 }, onError: (error) {
+                  // ignore: avoid_print
                   print(error.toString());
                 });
               },
@@ -123,27 +128,170 @@ class MainScreenPage extends StatelessWidget {
         child: Icon(Icons.add),
         backgroundColor: Colors.redAccent,
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream: bookCollectionReference.snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          final bookListStream = snapshot.data!.docs.map((book) {
-            return Book.fromDocument(book);
-          }).toList();
-          return ListView.builder(
-              itemCount: bookListStream.length,
-              itemBuilder: (context, index) {
-                return Text(bookListStream[index].title,
-                    style: TextStyle(
-                        overflow: TextOverflow.fade,
-                        color: Color(0xFF393939),
-                        fontWeight: FontWeight.bold));
-              });
-        },
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 12, left: 12, bottom: 10),
+            width: double.infinity,
+            child: RichText(
+                text: TextSpan(style: Theme.of(context).textTheme.headline5,
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: [
+                  TextSpan(text: 'Your reading\n activity '),
+                  TextSpan(
+                      text: 'right now...',
+                      style: TextStyle(fontWeight: FontWeight.bold))
+                ])),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: bookCollectionReference.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    var userBookFilteredReadListStream =
+                        snapshot.data!.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading == null) &&
+                          (book.startedReading != null);
+                    }).toList();
+
+                    userBooksReadList = snapshot.data!.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading != null) &&
+                          (book.startedReading != null);
+                    }).toList();
+                    //  booksRead = userBooksReadList.length;
+
+                    return Expanded(
+                      flex: 1,
+                      child: (userBookFilteredReadListStream.isNotEmpty)
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: userBookFilteredReadListStream.length,
+                              itemBuilder: (context, index) {
+                                Book book =
+                                    userBookFilteredReadListStream[index];
+
+                                return InkWell(
+                                  child: ReadingListCard(
+                                    rating: book.rating != null
+                                        ? (book.rating!)
+                                        : 4.0,
+                                    buttonText: 'Reading',
+                                    title: book.title,
+                                    author: book.bookauthor!,
+                                    image: book.photoUrl!,
+                                    pressRead: () {},
+                                  ),
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return BookDetailsDialog(
+                                          book: book,
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                          : Center(
+                              child: Text(
+                                  'You haven\'t started reading. \nStart by adding a book.',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ))),
+                    );
+                  },
+                )
+              : Container(),
+          Container(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: RichText(
+                        // ignore: prefer_const_literals_to_create_immutables
+                        text: TextSpan(children: [
+                      TextSpan(
+                          text: 'Reading List',
+                          style: TextStyle(
+                              color: kBlackColor,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold))
+                    ])),
+                  )
+                ],
+              )),
+          SizedBox(
+            height: 8,
+          ),
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: bookCollectionReference.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    var readingListListBook = snapshot.data!.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading == null) &&
+                          (book.startedReading == null);
+                    }).toList();
+
+                    return Expanded(
+                        flex: 1,
+                        child: (readingListListBook.length > 0)
+                            ? ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: readingListListBook.length,
+                                itemBuilder: (context, index) {
+                                  Book book = readingListListBook[index];
+
+                                  return InkWell(
+                                    child: ReadingListCard(
+                                      buttonText: 'Not Started',
+                                      rating: book.rating != null
+                                          ? (book.rating!)
+                                          : 4.0,
+                                      author: book.bookauthor!,
+                                      image: book.photoUrl!,
+                                      title: book.title,
+                                      pressRead: () {},
+                                    ),
+                                    onTap: () => showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          BookDetailsDialog(book: book),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Text('No books found. Add a book :)',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ))));
+                  },
+                )
+              : Container()
+        ],
       ),
     );
   }
