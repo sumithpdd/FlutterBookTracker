@@ -42,9 +42,6 @@ class _BookDetailsDialogState extends State<BookDetailsDialog> {
     TextEditingController _photoTextController =
         TextEditingController(text: widget.book.photoUrl);
 
-    // TextEditingController _notestTextController =
-    //     TextEditingController(text: widget.book.notes);
-
     return AlertDialog(
       title: Column(
         children: [
@@ -63,7 +60,7 @@ class _BookDetailsDialogState extends State<BookDetailsDialog> {
                 child: TextButton.icon(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close),
-                    label: Text('')),
+                    label: const Text('')),
               )
             ],
           ),
@@ -72,221 +69,215 @@ class _BookDetailsDialogState extends State<BookDetailsDialog> {
       ),
       content: Form(
         child: SingleChildScrollView(
-          child: Container(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _titleTextController,
-                    decoration: buildInputDecoration(
-                        label: 'Book title', hintText: 'Flutter Development'),
-                  ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _titleTextController,
+                  decoration: buildInputDecoration(
+                      label: 'Book title', hintText: 'Flutter Development'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _authorTextController,
-                    decoration: buildInputDecoration(
-                        label: 'Author', hintText: 'Jeff A.'),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _authorTextController,
+                  decoration: buildInputDecoration(
+                      label: 'Author', hintText: 'Jeff A.'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _photoTextController,
-                    decoration:
-                        buildInputDecoration(label: 'Book cover', hintText: ''),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _photoTextController,
+                  decoration:
+                      buildInputDecoration(label: 'Book cover', hintText: ''),
                 ),
-                const SizedBox(
-                  height: 5,
-                ),
-                TextButton.icon(
-                    onPressed: widget.book.startedReading == null
-                        ? () {
-                            setState(() {
-                              if (isReadingClicked == false) {
-                                isReadingClicked = true;
-                              } else {
-                                isReadingClicked = false;
-                              }
-                            });
-                          }
-                        : null,
-                    icon: const Icon(Icons.book_sharp),
-                    label: (widget.book.startedReading == null)
-                        ? (!isReadingClicked)
-                            ? const Text('Start Reading')
-                            : Text(
-                                'Started Reading...',
-                                style:
-                                    TextStyle(color: Colors.blueGrey.shade300),
-                              )
-                        : Text(
-                            'Started on: ${formatDate(widget.book.startedReading!)}')),
-                TextButton.icon(
-                    onPressed: widget.book.finishedReading == null
-                        ? () {
-                            setState(() {
-                              if (isFinishedReadingClicked == false) {
-                                isFinishedReadingClicked = true;
-                              } else {
-                                isFinishedReadingClicked = false;
-                              }
-                            });
-                          }
-                        : null,
-                    icon: const Icon(Icons.done),
-                    label: (widget.book.finishedReading == null)
-                        ? (!isFinishedReadingClicked)
-                            ? const Text('Mark as Read')
-                            : const Text(
-                                'Finished Reading!',
-                                style: TextStyle(color: Colors.grey),
-                              )
-                        : Text(
-                            'Finished on ${formatDate(widget.book.finishedReading!)}')),
-                RatingBar.builder(
-                    allowHalfRating: true,
-                    initialRating: widget.book.rating ?? 4.5,
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      switch (index) {
-                        case 0:
-                          return const Icon(
-                            Icons.sentiment_very_dissatisfied,
-                            color: Colors.red,
-                          );
-                        case 1:
-                          return const Icon(
-                            Icons.sentiment_dissatisfied,
-                            color: Colors.redAccent,
-                          );
-                        case 2:
-                          return const Icon(
-                            Icons.sentiment_neutral,
-                            color: Colors.amber,
-                          );
-                        case 3:
-                          return const Icon(
-                            Icons.sentiment_satisfied,
-                            color: Colors.lightGreen,
-                          );
-                        case 4:
-                          return const Icon(
-                            Icons.sentiment_very_satisfied,
-                            color: Colors.green,
-                          );
-                        default:
-                          return Container();
-                      }
-                    },
-                    onRatingUpdate: (rating) {
-                      setState(() {
-                        _rating = rating;
-                      });
-                    }),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: _notestTextController,
-                    decoration: buildInputDecoration(
-                        label: 'Your thoughts', hintText: 'Enter notes'),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TwoSidedRoundButton(
-                      text: 'Update',
-                      radius: 12,
-                      color: kIconColor,
-                      press: () {
-                        // Only update if new data was entered
-                        final userChangedTitle =
-                            widget.book.title != _titleTextController.text;
-                        final userChangedAuthor = widget.book.bookauthor !=
-                            _authorTextController.text;
-                        final userChangedPhotoUrl =
-                            widget.book.photoUrl != _photoTextController.text;
-
-                        final userChangedRating = widget.book.rating != _rating;
-
-                        final userChangedNotes =
-                            widget.book.notes != _notestTextController.text;
-
-                        final bookUpdate = userChangedTitle ||
-                            userChangedAuthor ||
-                            userChangedRating ||
-                            userChangedPhotoUrl ||
-                            userChangedNotes;
-                        if (bookUpdate) {
-                          _bookCollectionReference
-                              .doc(widget.book.id)
-                              .update(Book(
-                                userId: FirebaseAuth.instance.currentUser!.uid,
-                                title: _titleTextController.text,
-                                bookauthor: _authorTextController.text,
-                                photoUrl: _photoTextController.text,
-                                rating: _rating == null
-                                    ? widget.book.rating
-                                    : _rating,
-                                startedReading: isReadingClicked
-                                    ? Timestamp.now()
-                                    : widget.book.startedReading,
-                                finishedReading: isFinishedReadingClicked
-                                    ? Timestamp.now()
-                                    : widget.book.finishedReading,
-                                notes: _notestTextController.text,
-                                id: '',
-                                isbn13: widget.book.isbn13,
-                              ).toMap());
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              TextButton.icon(
+                  onPressed: widget.book.startedReading == null
+                      ? () {
+                          setState(() {
+                            if (isReadingClicked == false) {
+                              isReadingClicked = true;
+                            } else {
+                              isReadingClicked = false;
+                            }
+                          });
                         }
-
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TwoSidedRoundButton(
-                      text: 'Delete',
-                      radius: 12,
-                      color: Colors.red,
-                      press: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: const Text('Are you sure?'),
-                              content: const Text(
-                                  'Once the book is deleted you can\'t retrieve it back.'),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      _bookCollectionReference
-                                          .doc(widget.book.id)
-                                          .delete();
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const MainScreenPage(),
-                                          ));
-                                    },
-                                    child: const Text('Yes')),
-                                TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
-                                    child: const Text('No'))
-                              ],
-                            );
-                          },
+                      : null,
+                  icon: const Icon(Icons.book_sharp),
+                  label: (widget.book.startedReading == null)
+                      ? (!isReadingClicked)
+                          ? const Text('Start Reading')
+                          : Text(
+                              'Started Reading...',
+                              style: TextStyle(color: Colors.blueGrey.shade300),
+                            )
+                      : Text(
+                          'Started on: ${formatDate(widget.book.startedReading!)}')),
+              TextButton.icon(
+                  onPressed: widget.book.finishedReading == null
+                      ? () {
+                          setState(() {
+                            if (isFinishedReadingClicked == false) {
+                              isFinishedReadingClicked = true;
+                            } else {
+                              isFinishedReadingClicked = false;
+                            }
+                          });
+                        }
+                      : null,
+                  icon: const Icon(Icons.done),
+                  label: (widget.book.finishedReading == null)
+                      ? (!isFinishedReadingClicked)
+                          ? const Text('Mark as Read')
+                          : const Text(
+                              'Finished Reading!',
+                              style: TextStyle(color: Colors.grey),
+                            )
+                      : Text(
+                          'Finished on ${formatDate(widget.book.finishedReading!)}')),
+              RatingBar.builder(
+                  allowHalfRating: true,
+                  initialRating: widget.book.rating ?? 4.5,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    switch (index) {
+                      case 0:
+                        return const Icon(
+                          Icons.sentiment_very_dissatisfied,
+                          color: Colors.red,
                         );
-                      },
-                    ),
-                  ],
-                )
-              ],
-            ),
+                      case 1:
+                        return const Icon(
+                          Icons.sentiment_dissatisfied,
+                          color: Colors.redAccent,
+                        );
+                      case 2:
+                        return const Icon(
+                          Icons.sentiment_neutral,
+                          color: Colors.amber,
+                        );
+                      case 3:
+                        return const Icon(
+                          Icons.sentiment_satisfied,
+                          color: Colors.lightGreen,
+                        );
+                      case 4:
+                        return const Icon(
+                          Icons.sentiment_very_satisfied,
+                          color: Colors.green,
+                        );
+                      default:
+                        return Container();
+                    }
+                  },
+                  onRatingUpdate: (rating) {
+                    setState(() {
+                      _rating = rating;
+                    });
+                  }),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _notestTextController,
+                  decoration: buildInputDecoration(
+                      label: 'Your thoughts', hintText: 'Enter notes'),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TwoSidedRoundButton(
+                    text: 'Update',
+                    radius: 12,
+                    color: kIconColor,
+                    press: () {
+                      // Only update if new data was entered
+                      final userChangedTitle =
+                          widget.book.title != _titleTextController.text;
+                      final userChangedAuthor =
+                          widget.book.bookauthor != _authorTextController.text;
+                      final userChangedPhotoUrl =
+                          widget.book.photoUrl != _photoTextController.text;
+
+                      final userChangedRating = widget.book.rating != _rating;
+
+                      final userChangedNotes =
+                          widget.book.notes != _notestTextController.text;
+
+                      final bookUpdate = userChangedTitle ||
+                          userChangedAuthor ||
+                          userChangedRating ||
+                          userChangedPhotoUrl ||
+                          userChangedNotes;
+                      if (bookUpdate) {
+                        _bookCollectionReference
+                            .doc(widget.book.id)
+                            .update(Book(
+                              userId: FirebaseAuth.instance.currentUser!.uid,
+                              title: _titleTextController.text,
+                              bookauthor: _authorTextController.text,
+                              photoUrl: _photoTextController.text,
+                              rating: _rating,
+                              startedReading: isReadingClicked
+                                  ? Timestamp.now()
+                                  : widget.book.startedReading,
+                              finishedReading: isFinishedReadingClicked
+                                  ? Timestamp.now()
+                                  : widget.book.finishedReading,
+                              notes: _notestTextController.text,
+                              id: '',
+                              isbn13: widget.book.isbn13,
+                            ).toMap());
+                      }
+
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TwoSidedRoundButton(
+                    text: 'Delete',
+                    radius: 12,
+                    color: Colors.red,
+                    press: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text('Are you sure?'),
+                            content: const Text(
+                                'Once the book is deleted you can\'t retrieve it back.'),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    _bookCollectionReference
+                                        .doc(widget.book.id)
+                                        .delete();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const MainScreenPage(),
+                                        ));
+                                  },
+                                  child: const Text('Yes')),
+                              TextButton(
+                                  onPressed: () => Navigator.of(context).pop(),
+                                  child: const Text('No'))
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              )
+            ],
           ),
         ),
       ),

@@ -158,17 +158,10 @@ class MainScreenPage extends StatelessWidget {
                       return Book.fromDocument(book);
                     }).where((book) {
                       return (book.userId == authUser.uid) &&
-                          (book.finishedReading == null) &&
-                          (book.startedReading != null);
+                          (book.finishedReading != null ||
+                              book.startedReading != null);
                     }).toList();
 
-                    userBooksReadList = snapshot.data!.docs.map((book) {
-                      return Book.fromDocument(book);
-                    }).where((book) {
-                      return (book.userId == authUser.uid) &&
-                          (book.finishedReading != null) &&
-                          (book.startedReading != null);
-                    }).toList();
                     //  booksRead = userBooksReadList.length;
 
                     return Expanded(
@@ -180,13 +173,20 @@ class MainScreenPage extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 Book book =
                                     userBookFilteredReadListStream[index];
+                                var bookreadingstatus = "new";
+                                if (book.startedReading != null) {
+                                  bookreadingstatus = 'Reading';
+                                }
 
+                                if (book.finishedReading != null) {
+                                  bookreadingstatus = 'Finished';
+                                }
                                 return InkWell(
                                   child: ReadingListCard(
                                     rating: book.rating != null
                                         ? (book.rating!)
                                         : 4.0,
-                                    buttonText: 'Reading',
+                                    buttonText: bookreadingstatus,
                                     title: book.title,
                                     author: book.bookauthor!,
                                     image: book.photoUrl!,
@@ -216,7 +216,7 @@ class MainScreenPage extends StatelessWidget {
                   },
                 )
               : Container(),
-          Container(
+          SizedBox(
               width: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -250,22 +250,29 @@ class MainScreenPage extends StatelessWidget {
                       return Book.fromDocument(book);
                     }).where((book) {
                       return (book.userId == authUser.uid) &&
-                          (book.finishedReading == null) &&
                           (book.startedReading == null);
+                      //     (book.finishedReading == null) &&
                     }).toList();
 
                     return Expanded(
                         flex: 1,
-                        child: (readingListListBook.length > 0)
+                        child: (readingListListBook.isNotEmpty)
                             ? ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount: readingListListBook.length,
                                 itemBuilder: (context, index) {
                                   Book book = readingListListBook[index];
+                                  var bookreadingstatus = "new";
+                                  if (book.startedReading == null) {
+                                    bookreadingstatus = 'Not Started';
+                                  }
 
+                                  if (book.finishedReading != null) {
+                                    bookreadingstatus = 'Finished';
+                                  }
                                   return InkWell(
                                     child: ReadingListCard(
-                                      buttonText: 'Not Started',
+                                      buttonText: bookreadingstatus,
                                       rating: book.rating != null
                                           ? (book.rating!)
                                           : 4.0,

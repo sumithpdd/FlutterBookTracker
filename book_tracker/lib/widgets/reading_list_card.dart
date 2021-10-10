@@ -2,6 +2,7 @@ import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:flutter/material.dart';
 
+import 'book_rating.dart';
 import 'two_sided_roundbutton.dart';
 
 class ReadingListCard extends StatelessWidget {
@@ -66,7 +67,7 @@ class ReadingListCard extends StatelessWidget {
                     icon: const Icon(Icons.favorite_border),
                     onPressed: () {},
                   ),
-                  //  BookRating(score: (rating))
+                  BookRating(score: (rating))
                 ],
               )),
           Positioned(
@@ -89,7 +90,8 @@ class ReadingListCard extends StatelessWidget {
                                       fontWeight: FontWeight.bold)),
                               TextSpan(
                                   text: author,
-                                  style: TextStyle(color: kLightBlackColor)),
+                                  style:
+                                      const TextStyle(color: kLightBlackColor)),
                             ]),
                       ),
                     ),
