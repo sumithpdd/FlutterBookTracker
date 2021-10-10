@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/get_started_page.dart';
+import 'screens/login_page.dart';
 import 'screens/main_screen.dart';
+import 'screens/page_not_found.dart';
+import 'screens/route_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +42,29 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: widget,
+        //  initialRoute: '/',
+        //   routes: {
+        //     '/': (context) => const GetStartedPage(),
+        //     '/main': (context) => const MainScreenPage(),
+        //     '/login': (context) => const LoginPage()
+        //   },
+        initialRoute: '/',
+        onGenerateRoute: (settings) {
+          // ignore: avoid_print
+          print(settings.name);
+          return MaterialPageRoute(
+            builder: (context) {
+              return RouteController(settingName: settings.name!);
+            },
+          );
+        },
+        onUnknownRoute: (settings) {
+          return MaterialPageRoute(
+            builder: (context) {
+              return const PageNotFound();
+            },
+          );
+        },
       ),
     );
   }
