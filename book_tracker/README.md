@@ -42,3 +42,14 @@ Also modify index.html for latest firebase and firestore support. add after body
         const auth = firebaseApp.auth();
     </script>
 ```
+
+## Deploing to Firebase Hosting
+
+Follow guide to install CLI
+
+### Firebase CLI set up
+
+<https://firebase.google.com/docs/cli#setup_update_cli>
+
+and then run
+flutter run -d chrome --release
