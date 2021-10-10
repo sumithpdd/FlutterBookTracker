@@ -20,3 +20,4 @@ doc/api/
 *.js.deps
 *.js.map
 /book_tracker/web/index.html
+/book_tracker/.firebase/
