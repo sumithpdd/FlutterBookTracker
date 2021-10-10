@@ -16,7 +16,7 @@ class GetStartedPage extends StatelessWidget {
         child: Column(children: [
           Spacer(),
           Text(
-            'BookTracker',
+            'Sumith Book Tracker',
             style: Theme.of(context).textTheme.headline3,
           ),
           SizedBox(

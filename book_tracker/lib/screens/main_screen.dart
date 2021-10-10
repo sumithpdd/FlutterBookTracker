@@ -40,7 +40,7 @@ class MainScreenPage extends StatelessWidget {
               scale: 2,
             ),
             Text(
-              'A.Reader',
+              'Sumith Book Tracker',
               style: Theme.of(context).textTheme.headline6!.copyWith(
                   color: Colors.redAccent, fontWeight: FontWeight.bold),
             ),

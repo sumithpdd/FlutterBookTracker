@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'BookTracker',
+        title: 'Sumith Book Tracker',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
