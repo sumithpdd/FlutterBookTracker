@@ -85,19 +85,19 @@ Widget createProfileDialog(
             color: Colors.red,
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Container(
           decoration: BoxDecoration(
               border: Border.all(width: 1, color: Colors.blueGrey.shade100),
-              color: Color(0xfff1f3f6),
-              borderRadius: BorderRadius.all(Radius.circular(4))),
+              color: const Color(0xfff1f3f6),
+              borderRadius: const BorderRadius.all(Radius.circular(4))),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                Text('Favorite Quote:',
+                const Text('Favorite Quote:',
                     style: TextStyle(
                       color: Colors.black,
                     )),
@@ -127,7 +127,7 @@ Widget createProfileDialog(
           ),
         ),
         Expanded(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.5,
             child: ListView.builder(
               itemCount: bookList.length,
@@ -138,12 +138,12 @@ Widget createProfileDialog(
                   child: Column(
                     children: [
                       ListTile(
-                        title: Text('${book.title}'),
+                        title: Text(book.title),
                         leading: CircleAvatar(
                           radius: 35,
                           backgroundImage: NetworkImage(book.photoUrl!),
                         ),
-                        // subtitle: Text('${book.author}'),
+                        subtitle: Text('${book.bookauthor}'),
                       ),
                       Text('Finished on: ${formatDate(book.finishedReading!)}')
                     ],

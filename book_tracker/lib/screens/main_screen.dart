@@ -84,7 +84,7 @@ class MainScreenPage extends StatelessWidget {
                                   // return createProfileMobile(context, userListStream,
                                   //     FirebaseAuth.instance.currentUser, null);
                                   return createProfileDialog(
-                                      context, curUser, <Book>[]);
+                                      context, curUser, userBooksReadList);
                                 },
                               );
                             },
@@ -162,7 +162,11 @@ class MainScreenPage extends StatelessWidget {
                               book.startedReading != null);
                     }).toList();
 
-                    //  booksRead = userBooksReadList.length;
+                    userBooksReadList =
+                        userBookFilteredReadListStream.where((book) {
+                      return (book.finishedReading != null);
+                    }).toList();
+                    //    booksRead = userBooksReadList.length;
 
                     return Expanded(
                       flex: 1,
