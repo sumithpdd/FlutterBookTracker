@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'screens/get_started_page.dart';
 import 'screens/main_screen.dart';
@@ -25,13 +26,21 @@ class MyApp extends StatelessWidget {
       widget = const GetStartedPage();
     }
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'BookTracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return MultiProvider(
+      providers: [
+        StreamProvider<User?>(
+          create: (context) => FirebaseAuth.instance.authStateChanges(),
+          initialData: null,
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'BookTracker',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: widget,
       ),
-      home: widget,
     );
   }
 }
