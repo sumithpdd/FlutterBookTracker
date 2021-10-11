@@ -53,3 +53,28 @@ Follow guide to install CLI
 
 and then run
 flutter run -d chrome --release
+
+then run
+
+``` powershell
+firebase init
+```
+
+for public directory using build/web
+
+``` powershell
+firebase deploy
+```
+
+url to check
+
+<https://todo-flutter-8a80f.web.app/#/>
+
+## App launcher icon
+
+use package flutter_launcher_icons for creating icons automatically
+
+```powershell
+flutter pub get
+flutter pub run flutter_launcher_icons:main
+```

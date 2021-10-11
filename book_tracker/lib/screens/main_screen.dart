@@ -29,22 +29,20 @@ class MainScreenPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Image.asset(
+          'assets/images/Icon-76.png',
+          scale: 2,
+        ),
         backgroundColor: Colors.white24,
         elevation: 0.0,
         toolbarHeight: 77,
         centerTitle: false,
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/Icon-76.png',
-              scale: 2,
-            ),
-            Text(
-              'Sumith Book Tracker',
-              style: Theme.of(context).textTheme.headline6!.copyWith(
-                  color: Colors.redAccent, fontWeight: FontWeight.bold),
-            ),
-          ],
+        title: Text(
+          'Sumith Book Tracker',
+          style: Theme.of(context)
+              .textTheme
+              .headline6!
+              .copyWith(color: Colors.redAccent, fontWeight: FontWeight.bold),
         ),
         actions: [
           (authUser != null)
@@ -94,7 +92,7 @@ class MainScreenPage extends StatelessWidget {
                         Text(
                           curUser.displayName!.toUpperCase(),
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(fontSize: 8, color: Colors.black),
                         )
                       ],
                     );

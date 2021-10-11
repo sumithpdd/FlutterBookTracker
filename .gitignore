@@ -21,3 +21,5 @@ doc/api/
 *.js.map
 /book_tracker/web/index.html
 /book_tracker/.firebase/
+/book_tracker/android/app/google-services.json
+/book_tracker/web/index.html
